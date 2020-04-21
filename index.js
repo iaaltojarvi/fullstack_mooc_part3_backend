@@ -1,7 +1,13 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
+morgan.token('body', function getBody (req) {
+    return JSON.stringify(req.body)
+  })
+
 app.use(express.json()) 
+app.use(morgan(':method :url :response-time :body'))
 
 let persons = [
     {
@@ -61,6 +67,7 @@ const generateId = () => {
     const randomId = Math.floor(Math.random() * 1001);
     return randomId
   }
+
   
   app.post('/api/persons', (request, response) => {
     const body = request.body
@@ -74,7 +81,7 @@ const generateId = () => {
 
     if (inList) {
         return response.status(400).json({
-            error: 'Name already in the list'
+          error: 'Name already in the list'
         })
     }
   
@@ -85,7 +92,6 @@ const generateId = () => {
     }
   
     persons = persons.concat(person)
-  
     response.json(person)
   })
 
