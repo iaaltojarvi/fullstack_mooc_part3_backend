@@ -77,7 +77,7 @@ app.put('/api/persons/:id', (request, response, next) => {
         .then(person => {
             if (request.body.number !== "") {
                 person.name = request.body.name,
-                    person.number = request.body.number
+                person.number = request.body.number
                 person.save()
                     .then(savedPerson => {
                         response.json(savedPerson.toJSON())
