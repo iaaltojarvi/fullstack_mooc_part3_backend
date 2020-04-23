@@ -19,16 +19,13 @@ app.get('/', (req, res) => {
     res.send('<h1>Numbers</h1>')
 })
 
-const personCount = () => {
-    Person.countDocuments({})
-        .then(count => {
-            return count
-        })
-}
 app.get('/info', (req, res) => {
-    const persons = personCount()
-    res.send(`<h3>Phonebook has info for ${persons} people</h3>
+    Person.countDocuments({})
+        .then(num => {
+            res.send(`<h3>Phonebook has info for ${num} people</h3>
     ${new Date()}`)
+        })
+        .catch(error => next(error))
 })
 
 app.get('/api/persons', (req, res) => {
@@ -69,22 +66,29 @@ app.post('/api/persons', (request, response, next) => {
         number: body.number
     })
     person.save()
-    .then(savedPerson => {
-        response.json(savedPerson.toJSON())
-    })
-    .catch(error => next(error))
+        .then(savedPerson => {
+            response.json(savedPerson.toJSON())
+        })
+        .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
-    Person.findById(request.params.id, (error, person) => {
-        person.name = request.body.name,
-        person.number = request.body.number
-        person.save()
-        .then(savedPerson => {
-            response.json(savedPerson)
+    Person.findById(request.params.id)
+        .then(person => {
+            if (request.body.number !== "") {
+                person.name = request.body.name,
+                    person.number = request.body.number
+                person.save()
+                    .then(savedPerson => {
+                        response.json(savedPerson.toJSON())
+                    })
+            } else {
+                return response.status(400).json({
+                    error: 'Number missing'
+                })
+            }
         })
         .catch(error => next(error))
-    })
 })
 
 const unknownEndpoint = (request, response) => {
