@@ -60,6 +60,14 @@ app.post('/api/persons', (request, response, next) => {
         return response.status(400).json({
             error: 'Name or number missing'
         })
+    } else if (body.name.length < 3) {
+        return response.status(400).json({
+            error: 'Name is too short'
+        })
+    } else if (body.number.length < 8) {
+        return response.status(400).json({
+            error: 'Number is too short'
+        })
     }
     const person = new Person({
         name: body.name,
@@ -77,7 +85,7 @@ app.put('/api/persons/:id', (request, response, next) => {
         .then(person => {
             if (request.body.number !== "") {
                 person.name = request.body.name,
-                person.number = request.body.number
+                    person.number = request.body.number
                 person.save()
                     .then(savedPerson => {
                         response.json(savedPerson.toJSON())
