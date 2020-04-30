@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 const mongoose = require('mongoose')
-const uniqueValidator = require('mongoose-unique-validator');
+const uniqueValidator = require('mongoose-unique-validator')
 
 const url = process.env.MONGODB_URI
 
@@ -13,8 +14,8 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
   })
 
 const personSchema = new mongoose.Schema({
-  name: {type: String, unique: true, minlength: 3},
-  number: {type: String, minlength: 8}
+  name: { type: String, unique: true, minlength: 3 },
+  number: { type: String, minlength: 8 }
 })
 
 personSchema.plugin(uniqueValidator)
@@ -27,7 +28,8 @@ personSchema.set('toJSON', {
   }
 })
 
-mongoose.set('useCreateIndex', true);
+mongoose.set('useCreateIndex', true)
+mongoose.set('useFindAndModify', false)
 
 
 module.exports = mongoose.model('Person', personSchema)
